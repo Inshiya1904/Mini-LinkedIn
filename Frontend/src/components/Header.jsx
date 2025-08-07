@@ -1,14 +1,32 @@
-import { Link } from "react-router-dom";
-import { useContext } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useContext, useState, useRef, useEffect } from "react";
 import { AuthContext } from "../context/AuthContext";
 
 export default function Header() {
   const { user, logout } = useContext(AuthContext);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
+  const navigate = useNavigate();
 
   const handleLogout = () => {
     logout();
     window.location.href = "/login";
   };
+
+  const toggleDropdown = () => {
+    setIsDropdownOpen(prev => !prev);
+  };
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   return (
     <header className="bg-white shadow">
@@ -16,15 +34,18 @@ export default function Header() {
         <Link to="/" className="text-xl font-bold text-blue-600">
           LinkedInClone
         </Link>
-        <nav className="flex items-center gap-4">
+        <nav className="relative flex items-center gap-4">
           {user ? (
             <>
-              {/* <Link to="/profile" className="flex items-center gap-2 text-gray-600"> */}
-                {user.profilePic ? (
+              <div
+                onClick={toggleDropdown}
+                className="flex items-center gap-2 text-gray-600 cursor-pointer select-none"
+              >
+                {user.profileImage ? (
                   <img
-                    src={user.profilePic}
+                    src={user.profileImage}
                     alt="profile"
-                    className="w-8 h-8 rounded-full"
+                    className="w-8 h-8 rounded-full object-cover"
                   />
                 ) : (
                   <div className="w-8 h-8 rounded-full bg-blue-500 text-white flex items-center justify-center">
@@ -32,10 +53,40 @@ export default function Header() {
                   </div>
                 )}
                 <span>{user.name}</span>
-              {/* </Link> */}
-              <button onClick={handleLogout} className="text-red-500">
-                Logout
-              </button>
+              </div>
+
+              {/* Dropdown */}
+              {isDropdownOpen && (
+                <div
+                  ref={dropdownRef}
+                  className="absolute top-full mt-2 right-0 bg-white border border-gray-200 rounded shadow-lg z-50 w-44"
+                >
+                  <button
+                    onClick={() => {
+                      setIsDropdownOpen(false);
+                      navigate(`/user/${user._id}`);
+                    }}
+                    className="w-full px-4 py-2 text-left hover:bg-gray-100"
+                  >
+                    View Profile
+                  </button>
+                  <button
+                    onClick={() => {
+                      setIsDropdownOpen(false);
+                      navigate("/update-profile");
+                    }}
+                    className="w-full px-4 py-2 text-left hover:bg-gray-100"
+                  >
+                    Update Profile
+                  </button>
+                  <button
+                    onClick={handleLogout}
+                    className="w-full px-4 py-2 text-left text-red-500 hover:bg-gray-100"
+                  >
+                    Logout
+                  </button>
+                </div>
+              )}
             </>
           ) : (
             <>

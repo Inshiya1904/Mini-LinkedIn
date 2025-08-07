@@ -13,3 +13,7 @@ router.get('/', getAllPosts);
 // Get user profile and their posts
 router.get('/user/:userId', getUserProfileWithPosts);
 module.exports = router;
+
+// delete post
+// router.delete('/deletePost/:postId',authMiddleware, deletePosts);
+

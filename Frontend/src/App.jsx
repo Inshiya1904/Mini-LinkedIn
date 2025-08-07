@@ -3,8 +3,8 @@ import Header from "./components/Header";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-import Profile from "./pages/Profile";
 import UserProfile from "./pages/UserProfile";
+import UpdateProfile from "./pages/UpdateProfile";
 
 export default function App() {
   return (
@@ -14,10 +14,11 @@ export default function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-         {/* Own profile page */}
-        <Route path="/profile" element={<Profile />} />
+        
+        {/* update profile */}
+        <Route path="/update-profile" element={<UpdateProfile/>} />
 
-        {/* View another user's profile by ID */}
+        {/* View user profile with their posts */}
         <Route path="/user/:userId" element={<UserProfile />} />
 
         {/* Optional 404 */}

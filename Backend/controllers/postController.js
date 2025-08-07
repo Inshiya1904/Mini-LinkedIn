@@ -52,3 +52,27 @@ exports.getUserProfileWithPosts = async (req, res) => {
     res.status(500).json({ msg: 'Error fetching profile', error: err.message });
   }
 };
+
+// controllers/postController.js
+// exports.deletePosts = async (req, res) => {
+//   try {
+//     const { postId } = req.params;
+
+//     const post = await postModel.findById(postId);
+//     if (!post) {
+//       return res.status(404).json({ msg: 'Post not found' });
+//     }
+
+//     // Check if logged-in user is the creator of the post
+//     if (post.user.toString() !== req.user.id) {
+//       return res.status(403).json({ msg: 'Unauthorized: You can only delete your own posts' });
+//     }
+//  await post.deleteOne();
+//     // const deletePost = await postModel.findByIdAndDelete(postId); // OR postModel.findByIdAndDelete(postId) if already verified
+//     res.json({ msg: 'Post deleted successfully' });
+
+//   } catch (err) {
+//     res.status(500).json({ msg: 'Server error', error: err.message });
+//   }
+// };
+

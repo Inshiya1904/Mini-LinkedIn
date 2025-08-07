@@ -22,6 +22,8 @@ export const AuthProvider = ({ children }) => {
     fetchUser();
   }, []);
 
+
+
   const login = async (token) => {
     localStorage.setItem("token", token);
     try {
@@ -36,9 +38,25 @@ export const AuthProvider = ({ children }) => {
     localStorage.clear();
     setUser(null);
   };
+   const refreshUser = async () => {
+    try {
+      const token = JSON.parse(localStorage.getItem("user"))?.token;
+      const res = await axios.get("/api/users/profile", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (res.data) {
+        setUser(res.data);
+        localStorage.setItem("user", JSON.stringify(res.data));
+      }
+    } catch (err) {
+      console.error("Failed to refresh user", err);
+    }
+  };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ user, login, logout,refreshUser  }}>
       {children}
     </AuthContext.Provider>
   );

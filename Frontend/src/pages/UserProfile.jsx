@@ -21,6 +21,7 @@ const UserProfile = () => {
             },
           }
         );
+        console.log("FULL API RESPONSE:", res.data);
 
         setUser(res.data.user);
         setPosts(res.data.posts);
@@ -37,6 +38,9 @@ const UserProfile = () => {
   if (loading) return <div className="text-center mt-5">Loading...</div>;
   if (!user) return <div className="text-center mt-5">User not found</div>;
 
+  const handleDelete = (postId) => {
+    
+  }
   return (
     <div className="max-w-4xl mx-auto p-4">
       <div className="bg-white shadow p-4 rounded mb-6">
@@ -56,7 +60,7 @@ const UserProfile = () => {
               className="w-32 h-32 rounded-full mt-4"
             />
           ) : (
-            <div className="w-32 h-32 rounded-full mt-4 bg-blue-600 text-white flex items-center justify-center">
+            <div className="w-32 h-32 text-[50px]  rounded-full mt-4 bg-blue-600 text-white flex items-center justify-center">
               {user.name?.charAt(0).toUpperCase()}
             </div>
           )}
@@ -79,11 +83,13 @@ const UserProfile = () => {
                     className="w-full mt-2 rounded"
                   />
                 )}
+                <button onClick={()=>handleDelete(post._id)}>Delete</button>
               </div>
             ))}
           </div>
         )}
       </div>
+      
     </div>
   );
 };
