@@ -4,6 +4,7 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Profile from "./pages/Profile";
+import UserProfile from "./pages/UserProfile";
 
 export default function App() {
   return (
@@ -13,7 +14,14 @@ export default function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/profile/:id" element={<Profile />} />
+         {/* Own profile page */}
+        <Route path="/profile" element={<Profile />} />
+
+        {/* View another user's profile by ID */}
+        <Route path="/user/:userId" element={<UserProfile />} />
+
+        {/* Optional 404 */}
+        {/* <Route path="*" element={<NotFound />} /> */}
       </Routes>
     </BrowserRouter>
   );

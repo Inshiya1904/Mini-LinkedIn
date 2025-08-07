@@ -6,7 +6,8 @@ export default function Home() {
   const [posts, setPosts] = useState([]);
   const [content, setContent] = useState("");
   const [image, setImage] = useState(null);
-
+  console.log(posts)
+  
   const fetchPosts = async () => {
     const { data } = await getAllPosts();
     setPosts(data);
