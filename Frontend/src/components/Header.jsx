@@ -19,7 +19,7 @@ export default function Header() {
         <nav className="flex items-center gap-4">
           {user ? (
             <>
-              <Link to="/profile" className="flex items-center gap-2 text-gray-600">
+              {/* <Link to="/profile" className="flex items-center gap-2 text-gray-600"> */}
                 {user.profilePic ? (
                   <img
                     src={user.profilePic}
@@ -32,7 +32,7 @@ export default function Header() {
                   </div>
                 )}
                 <span>{user.name}</span>
-              </Link>
+              {/* </Link> */}
               <button onClick={handleLogout} className="text-red-500">
                 Logout
               </button>
