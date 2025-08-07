@@ -33,7 +33,7 @@ const Register = () => {
       //   formData.append("profileImage", profileImage);
       // }
 
-      const res = await axios.post("http://localhost:3000/api/auth/register", formData);
+      const res = await axios.post("https://mini-linkedin-backend-h8i7.onrender.com/api/auth/register", formData);
       localStorage.setItem("token", res.data.token);
       navigate("/login");
     } catch (err) {
