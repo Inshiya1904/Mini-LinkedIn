@@ -1,47 +1,129 @@
-import { useEffect, useState } from "react";
-import { getProfile, updateProfile, getUserWithPosts } from "../services/api";
-import PostCard from "../components/PostCard";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 
-export default function Profile() {
-  const [user, setUser] = useState(null);
-  const [posts, setPosts] = useState([]);
-  const [bio, setBio] = useState("");
-  const [name, setName] = useState("");
-  const [image, setImage] = useState(null);
-
-  const fetchData = async () => {
-    const { data } = await getProfile();
-    setUser(data.user);
-    setName(data.user.name);
-    setBio(data.user.bio || "");
-    const res = await getUserWithPosts(data.user._id);
-    setPosts(res.data.posts);
-  };
+const UpdateProfile = () => {
+  const [formData, setFormData] = useState({
+    name: "",
+    bio: "",
+  });
+  const [profileImage, setProfileImage] = useState(null);
+  const [preview, setPreview] = useState("");
+  const [message, setMessage] = useState("");
 
   useEffect(() => {
-    fetchData();
+    // Fetch current user data
+    const fetchProfile = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const res = await axios.get("http://localhost:3000/api/auth/profile", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        const { name, bio, profileImage } = res.data.user;
+        setFormData({ name, bio });
+        setPreview(profileImage);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    fetchProfile();
   }, []);
 
-  const handleUpdate = async (e) => {
-    e.preventDefault();
-    const formData = new FormData();
-    formData.append("name", name);
-    formData.append("bio", bio);
-    if (image) formData.append("profileImage", image);
-    await updateProfile(formData);
-    fetchData();
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  return user && (
-    <div className="max-w-xl mx-auto mt-6">
-      <form onSubmit={handleUpdate} className="bg-white p-4 shadow rounded-xl mb-6">
-        <input type="text" value={name} onChange={(e) => setName(e.target.value)} className="w-full mb-2 p-2 border rounded" />
-        <textarea value={bio} onChange={(e) => setBio(e.target.value)} className="w-full mb-2 p-2 border rounded" placeholder="Bio" />
-        <input type="file" onChange={(e) => setImage(e.target.files[0])} className="mb-2" />
-        <button className="bg-green-600 text-white px-4 py-2 rounded">Update</button>
-      </form>
+  const handleFileChange = (e) => {
+    setProfileImage(e.target.files[0]);
+    setPreview(URL.createObjectURL(e.target.files[0]));
+  };
 
-      {posts.map(post => <PostCard key={post._id} post={post} />)}
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const token = localStorage.getItem("token");
+      const form = new FormData();
+      form.append("name", formData.name);
+      form.append("bio", formData.bio);
+      if (profileImage) {
+        form.append("profileImage", profileImage);
+      }
+
+      const res = await axios.put("http://localhost:3000/api/auth/profile", form, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      setMessage("Profile updated successfully!");
+    } catch (err) {
+      console.error(err);
+      setMessage("Failed to update profile");
+    }
+  };
+
+  return (
+    <div className="max-w-md mx-auto p-6 bg-white shadow rounded">
+      <h2 className="text-2xl font-semibold mb-4">Update Profile</h2>
+
+      {preview && (
+        <img
+          src={preview}
+          alt="Preview"
+          className="w-32 h-32 rounded-full object-cover mx-auto mb-4"
+        />
+      )}
+
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div>
+          <label className="block mb-1">Name:</label>
+          <input
+            type="text"
+            name="name"
+            value={formData.name}
+            onChange={handleChange}
+            className="w-full border p-2 rounded"
+            required
+          />
+        </div>
+
+        <div>
+          <label className="block mb-1">Bio:</label>
+          <textarea
+            name="bio"
+            value={formData.bio}
+            onChange={handleChange}
+            rows="3"
+            className="w-full border p-2 rounded"
+          ></textarea>
+        </div>
+
+        <div>
+          <label className="block mb-1">Profile Image:</label>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleFileChange}
+            className="w-full"
+          />
+        </div>
+
+        <button
+          type="submit"
+          className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
+        >
+          Update Profile
+        </button>
+
+        {message && <p className="text-center mt-2">{message}</p>}
+      </form>
     </div>
   );
-}
+};
+
+export default UpdateProfile;
