@@ -48,8 +48,8 @@ Only the logged-in user can delete their own posts.
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/Inshiya1904/LeaderBoard.git
-cd LeaderBoard
+git https://github.com/Inshiya1904/Mini-LinkedIn.git
+cd Mini-LinkedIn
 ```
 
 ### 2. Install Client Dependencies
@@ -74,5 +74,5 @@ npm run dev
 cd Frontend
 npm run dev
 ```
-## 📂 Project Structure
+
 
